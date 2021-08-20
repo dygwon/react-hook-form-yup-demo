@@ -6,7 +6,7 @@ import { Text } from '@fluentui/react/lib/Text';
 import { TextField } from '@fluentui/react/lib/TextField';
 import { ThemeProvider } from '@fluentui/react/lib/Theme';
 import { AzureThemeLight } from '@fluentui/azure-themes';
-import { useForm, FormProvider, Controller } from 'react-hook-form';
+import { useForm, FormProvider, Controller, useFormContext } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { SchemaOf } from 'yup';
@@ -16,6 +16,7 @@ import { ControlledCheckbox } from './components/controlledCheckbox';
 import { occupationDropdownOptions } from './models/occupationDropdownOptions';
 import { textFieldStyles } from './public/textFieldStyles';
 import { dropdownStyles } from './public/dropdownStyles';
+import { DevTool } from '@hookform/devtools';
 
 initializeIcons();
 
@@ -34,9 +35,9 @@ type formInputs = {
 };
 
 const formSchema: SchemaOf<formInputs> = yup.object().shape({
-  firstName: yup.string().required('Please provide a first name'),
+  firstName: yup.string().required('Give me a first name!'),
   lastName: yup.string(),
-  email: yup.string().email().required('Please provide an email'),
+  email: yup.string().email("hey that isn't an email address!").required('Please provide an email'),
   website: yup.string().url().required('Please provide a website'),
   id: yup.string().uuid().required('Please provide an id'),
   occupation: yup.string().required('Please select an occupation'),
@@ -61,7 +62,6 @@ export const App: React.FunctionComponent = () => {
     defaultValues,
   });
   const onSubmit = (data: any) => console.log(data);
-  const onResetClick = (): void => methods.reset();
   const onTextFieldChange = (e: any, newValue?: string): void =>
     setExampleText(newValue || '');
 
@@ -125,7 +125,7 @@ export const App: React.FunctionComponent = () => {
               name="isCryptoHolder"
               label="Do you hold any cryptocurrencies?"
             />
-            <DefaultButton text="Reset" onClick={onResetClick} />
+            <NestedInput />
             <PrimaryButton type="submit" text="Submit" />
             <TextField
               label="Example Controlled Component"
@@ -135,11 +135,17 @@ export const App: React.FunctionComponent = () => {
             <Text variant="xLarge" block>{`Renders: ${renderCount}`}</Text>
           </Stack>
         </form>
+
+        <DevTool control={methods.control} placement="top-right" />
       </FormProvider>
     </ThemeProvider>
   );
 };
 
-// const NestedInput: React.FunctionComponent = () => {
-//   return <></>;
-// };
+const NestedInput: React.FunctionComponent = () => {
+  const { reset } = useFormContext();
+  const onResetClick = (): void => reset();
+
+  return <DefaultButton text="Reset" onClick={onResetClick} />
+  ;
+};
