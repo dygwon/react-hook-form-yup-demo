@@ -7,4 +7,5 @@ export const occupationDropdownOptions: IDropdownOption[] = [
   { key: 'Product Designer', text: 'Product Designer' },
   { key: 'Program Manager', text: 'Program Manager' },
   { key: 'Technical Program Manager', text: 'Technical Program Manager' },
+  { key: 'Athlete', text: 'Athlete' },
 ];

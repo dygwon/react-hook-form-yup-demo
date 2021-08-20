@@ -12,18 +12,12 @@ import { dropdownStyles } from './public/dropdownStyles';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { SchemaOf } from 'yup';
+import { ThemeProvider } from '@fluentui/react/lib/Theme';
+import { AzureThemeLight } from '@fluentui/azure-themes';
 
 initializeIcons();
 
 const stackTokens: IStackTokens = { childrenGap: 15 };
-const stackStyles: Partial<IStackStyles> = {
-  root: {
-    width: '960px',
-    margin: '0 auto',
-    textAlign: 'center',
-    color: '#605e5c',
-  },
-};
 
 /**
  * Packages:
@@ -80,61 +74,62 @@ export const App: React.FunctionComponent = () => {
   };
 
   return (
-    <FormProvider {...methods}>
-      <form onSubmit={methods.handleSubmit(onSubmit)} noValidate>
-        <Stack
-          horizontalAlign="center"
-          verticalAlign="center"
-          verticalFill
-          styles={stackStyles}
-          tokens={stackTokens}
-        >
-          <ControlledTextField
-            name="firstName"
-            label="First Name"
-            isRequired
-            styles={textFieldStyles}
-          />
-          <ControlledTextField
-            name="lastName"
-            label="Last Name"
-            styles={textFieldStyles}
-          />
-          <ControlledTextField
-            name="email"
-            label="Email"
-            isRequired
-            styles={textFieldStyles}
-          />
-          <ControlledTextField
-            name="website"
-            label="Website"
-            isRequired
-            styles={textFieldStyles}
-          />
-          <ControlledTextField
-            name="id"
-            label="ID"
-            isRequired
-            styles={textFieldStyles}
-          />
-          <ControlledDropdown
-            name="occupation"
-            label="Occupation"
-            options={occupationDropdownOptions}
-            isRequired
-            styles={dropdownStyles}
-          />
-          <ControlledCheckbox
-            name="isCryptoHolder"
-            label="Do you hold any cryptocurrencies?"
-          />
-          <DefaultButton text="Reset" onClick={onResetClick} />
-          <PrimaryButton type="submit" text="Submit" />
-          <p>{result}</p>
-        </Stack>
-      </form>
-    </FormProvider>
+    <ThemeProvider theme={AzureThemeLight}>
+      <FormProvider {...methods}>
+        <form onSubmit={methods.handleSubmit(onSubmit)} noValidate>
+          <Stack
+            horizontalAlign="center"
+            verticalAlign="center"
+            verticalFill
+            tokens={stackTokens}
+          >
+            <ControlledTextField
+              name="firstName"
+              label="First Name"
+              isRequired
+              styles={textFieldStyles}
+            />
+            <ControlledTextField
+              name="lastName"
+              label="Last Name"
+              styles={textFieldStyles}
+            />
+            <ControlledTextField
+              name="email"
+              label="Email"
+              isRequired
+              styles={textFieldStyles}
+            />
+            <ControlledTextField
+              name="website"
+              label="Website"
+              isRequired
+              styles={textFieldStyles}
+            />
+            <ControlledTextField
+              name="id"
+              label="ID"
+              isRequired
+              styles={textFieldStyles}
+            />
+            <ControlledDropdown
+              name="occupation"
+              label="Occupation"
+              options={occupationDropdownOptions}
+              isRequired
+              styles={dropdownStyles}
+            />
+            <ControlledCheckbox
+              name="isCryptoHolder"
+              label="Do you hold any cryptocurrencies?"
+            />
+            <DefaultButton text="Reset" onClick={onResetClick} />
+            <PrimaryButton type="submit" text="Submit" />
+            <p>{result}</p>
+          </Stack>
+        </form>
+      </FormProvider>
+    </ThemeProvider>
   );
 };
 
