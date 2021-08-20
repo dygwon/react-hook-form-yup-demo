@@ -83,7 +83,10 @@ export const App: React.FunctionComponent = () => {
             />
             <Controller
               name="lastName"
-              render={({ field: { value, onChange }, fieldState: { error } }) => (
+              render={({
+                field: { value, onChange },
+                fieldState: { error },
+              }) => (
                 <TextField
                   label="Last Name"
                   value={value}
