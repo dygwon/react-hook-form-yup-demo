@@ -5,23 +5,15 @@ import { Checkbox } from '@fluentui/react/lib/Checkbox';
 type ControlledCheckboxProps = {
   name: string;
   label: string;
-  defaultValue?: boolean;
 };
 
 export const ControlledCheckbox: React.FunctionComponent<ControlledCheckboxProps> =
-  ({ name, label, defaultValue }) => {
+  ({ name, label }) => {
     const {
       field: { value, onChange },
     } = useController({
       name,
-      defaultValue,
     });
 
-    return (
-      <Checkbox
-        label={label}
-        checked={value}
-        onChange={onChange}
-      />
-    );
+    return <Checkbox label={label} checked={value} onChange={onChange} />;
   };

@@ -1,35 +1,27 @@
 import React, { useState } from 'react';
-import { Stack, IStackTokens, IStackStyles } from '@fluentui/react/lib/Stack';
+import { Stack, IStackTokens } from '@fluentui/react/lib/Stack';
 import { initializeIcons } from '@fluentui/react/lib/Icons';
-import { useForm, FormProvider } from 'react-hook-form';
 import { DefaultButton, PrimaryButton } from '@fluentui/react/lib/Button';
+import { Text } from '@fluentui/react/lib/Text';
+import { TextField } from '@fluentui/react/lib/TextField';
+import { ThemeProvider } from '@fluentui/react/lib/Theme';
+import { AzureThemeLight } from '@fluentui/azure-themes';
+import { useForm, FormProvider, Controller } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
+import * as yup from 'yup';
+import { SchemaOf } from 'yup';
 import { ControlledTextField } from './components/controlledTextField';
 import { ControlledDropdown } from './components/controlledDropdown';
 import { ControlledCheckbox } from './components/controlledChoiceGroup';
 import { occupationDropdownOptions } from './models/occupationDropdownOptions';
 import { textFieldStyles } from './public/textFieldStyles';
 import { dropdownStyles } from './public/dropdownStyles';
-import { yupResolver } from '@hookform/resolvers/yup';
-import * as yup from 'yup';
-import { SchemaOf } from 'yup';
-import { ThemeProvider } from '@fluentui/react/lib/Theme';
-import { AzureThemeLight } from '@fluentui/azure-themes';
 
 initializeIcons();
 
-const stackTokens: IStackTokens = { childrenGap: 15 };
+const stackTokens: IStackTokens = { childrenGap: 15, padding: 30 };
 
-/**
- * Packages:
- *   react-hook-form
- *   @hookform/resolvers yup
- *   yup
- *
- * 1. useController
- * 2. control and nesting with FormProvider
- * 3. useFormContext provides same methods as useForm
- * 4. schema-based validation
- */
+let renderCount = 0;
 
 type formInputs = {
   firstName: string;
@@ -62,16 +54,16 @@ const defaultValues: formInputs = {
 };
 
 export const App: React.FunctionComponent = () => {
+  renderCount++;
+  const [exampleText, setExampleText] = useState('');
   const methods = useForm<formInputs>({
     resolver: yupResolver(formSchema),
-    defaultValues: defaultValues,
+    defaultValues,
   });
-  const [result, setResult] = useState('');
-  const onSubmit = (data: any) => setResult(JSON.stringify(data));
-
-  const onResetClick = (): void => {
-    methods.reset();
-  };
+  const onSubmit = (data: any) => console.log(data);
+  const onResetClick = (): void => methods.reset();
+  const onTextFieldChange = (e: any, newValue?: string): void =>
+    setExampleText(newValue || '');
 
   return (
     <ThemeProvider theme={AzureThemeLight}>
@@ -89,10 +81,17 @@ export const App: React.FunctionComponent = () => {
               isRequired
               styles={textFieldStyles}
             />
-            <ControlledTextField
+            <Controller
               name="lastName"
-              label="Last Name"
-              styles={textFieldStyles}
+              render={({ field: { value, onChange }, fieldState: { error } }) => (
+                <TextField
+                  label="Last Name"
+                  value={value}
+                  onChange={onChange}
+                  styles={textFieldStyles}
+                  errorMessage={error && error.message}
+                />
+              )}
             />
             <ControlledTextField
               name="email"
@@ -125,7 +124,12 @@ export const App: React.FunctionComponent = () => {
             />
             <DefaultButton text="Reset" onClick={onResetClick} />
             <PrimaryButton type="submit" text="Submit" />
-            <p>{result}</p>
+            <TextField
+              label="Example Controlled Component"
+              value={exampleText}
+              onChange={onTextFieldChange}
+            />
+            <Text variant="xLarge" block>{`Renders: ${renderCount}`}</Text>
           </Stack>
         </form>
       </FormProvider>

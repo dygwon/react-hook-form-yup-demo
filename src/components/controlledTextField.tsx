@@ -5,7 +5,6 @@ import { TextField, ITextFieldStyles } from '@fluentui/react/lib/TextField';
 type ControlledTextFieldProps = {
   name: string;
   label: string;
-  defaultValue?: string;
   isRequired?: boolean;
   isMultiline?: boolean;
   isAutoAdjustHeight?: boolean;
@@ -13,21 +12,12 @@ type ControlledTextFieldProps = {
 };
 
 export const ControlledTextField: React.FunctionComponent<ControlledTextFieldProps> =
-  ({
-    name,
-    defaultValue,
-    label,
-    isRequired,
-    isMultiline,
-    isAutoAdjustHeight,
-    styles,
-  }) => {
+  ({ name, label, isRequired, isMultiline, isAutoAdjustHeight, styles }) => {
     const {
       field: { value, onChange },
       fieldState: { error },
     } = useController({
       name,
-      defaultValue: defaultValue || '',
     });
 
     return (

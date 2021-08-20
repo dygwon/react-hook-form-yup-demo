@@ -9,20 +9,18 @@ import {
 type ControlledDropdownProps = {
   name: string;
   options: IDropdownOption[];
-  defaultValue?: string;
   label?: string;
   isRequired?: boolean;
   styles?: Partial<IDropdownStyles>;
 };
 
 export const ControlledDropdown: React.FunctionComponent<ControlledDropdownProps> =
-  ({ name, defaultValue, options, label, isRequired, styles }) => {
+  ({ name, options, label, isRequired, styles }) => {
     const {
       field: { value, onChange },
       fieldState: { error },
     } = useController({
       name,
-      defaultValue,
     });
 
     const onDropdownChange = (e: any, option: any) => onChange(option.key);
