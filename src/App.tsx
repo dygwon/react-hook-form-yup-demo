@@ -1,9 +1,16 @@
 import React from 'react';
-import { Stack, Text, Link, FontWeights, IStackTokens, IStackStyles, ITextStyles } from '@fluentui/react';
-import logo from './logo.svg';
-import './App.css';
+import { Stack, IStackTokens, IStackStyles } from '@fluentui/react/lib/Stack';
+import { initializeIcons } from '@fluentui/react/lib/Icons';
+import { useForm, FormProvider } from 'react-hook-form';
+import { PrimaryButton } from '@fluentui/react/lib/Button';
+import { ControlledTextField } from './components/controlledTextField';
+import { ControlledDropdown } from './components/controlledDropdown';
+import { ControlledChoiceGroup } from './components/controlledChoiceGroup';
+import { Header } from './components/Header';
+import { IChoiceGroupOption, IDropdownOption } from '@fluentui/react';
 
-const boldStyle: Partial<ITextStyles> = { root: { fontWeight: FontWeights.semibold } };
+initializeIcons();
+
 const stackTokens: IStackTokens = { childrenGap: 15 };
 const stackStyles: Partial<IStackStyles> = {
   root: {
@@ -14,31 +21,86 @@ const stackStyles: Partial<IStackStyles> = {
   },
 };
 
+const occupationDropdownOptions: IDropdownOption[] = [
+  { key: 'Software Engineer', text: 'Software Engineer' },
+  { key: 'Software Engineering Manager', text: 'Software Engineering Manager' },
+  { key: 'Data Scientist', text: 'Data Scientist' },
+  { key: 'Product Designer', text: 'Product Designer' },
+  { key: 'Program Manager', text: 'Program Manager' },
+  { key: 'Technical Program Manager', text: 'Technical Program Manager' },
+];
+
+const preferredCryptoOptions: IChoiceGroupOption[] = [
+  { key: 'BTC', text: 'BTC' },
+  { key: 'ETH', text: 'ETH' },
+  { key: 'ADA', text: 'ADA' },
+  { key: 'BNB', text: 'BNB' },
+];
+
+/**
+ * 1. useForm - custom hook
+ * 2. register
+ * 3. handleSubmit - validate inputs prior to invoking onSubmit
+ */
+
+type Inputs = {
+  firstName: string,
+  lastName: string,
+  email: string,
+  mobileNumber: number,
+  id: string,
+  occupation: string,
+  preferredCrypto: string
+}
+
 export const App: React.FunctionComponent = () => {
+
+  const methods = useForm<Inputs>();
+  const onSubmit = (data: any) => console.log(data);
+  
   return (
-    <Stack horizontalAlign="center" verticalAlign="center" verticalFill styles={stackStyles} tokens={stackTokens}>
-      <img className="App-logo" src={logo} alt="logo" />
-      <Text variant="xxLarge" styles={boldStyle}>
-        Welcome to your Fluent UI app
-      </Text>
-      <Text variant="large">For a guide on how to customize this project, check out the Fluent UI documentation.</Text>
-      <Text variant="large" styles={boldStyle}>
-        Essential links
-      </Text>
-      <Stack horizontal tokens={stackTokens} horizontalAlign="center">
-        <Link href="https://developer.microsoft.com/en-us/fluentui#/get-started/web">Docs</Link>
-        <Link href="https://stackoverflow.com/questions/tagged/office-ui-fabric">Stack Overflow</Link>
-        <Link href="https://github.com/microsoft/fluentui/">Github</Link>
-        <Link href="https://twitter.com/fluentui">Twitter</Link>
-      </Stack>
-      <Text variant="large" styles={boldStyle}>
-        Design system
-      </Text>
-      <Stack horizontal tokens={stackTokens} horizontalAlign="center">
-        <Link href="https://developer.microsoft.com/en-us/fluentui#/styles/web/icons">Icons</Link>
-        <Link href="https://developer.microsoft.com/en-us/fluentui#/styles/web">Styles</Link>
-        <Link href="https://aka.ms/themedesigner">Theme designer</Link>
-      </Stack>
-    </Stack>
+    <FormProvider {...methods}>
+      <form onSubmit={methods.handleSubmit(onSubmit)} noValidate>
+        <Header />
+        <Stack horizontalAlign="center" verticalAlign="center" verticalFill styles={stackStyles} tokens={stackTokens}>
+          <ControlledTextField
+            name="firstName"
+            label="First Name"
+            isRequired
+          />
+          <ControlledTextField
+            name="lastName"
+            label="Last Name"
+          />
+          <ControlledTextField
+            name="email"
+            label="Email"
+            isRequired
+          />
+          <ControlledTextField
+            name="mobileNumber"
+            label="Mobile Number"
+            isRequired
+          />
+          <ControlledTextField
+            name="id"
+            label="ID"
+            isRequired
+          />
+          <ControlledDropdown
+            name="Occupation"
+            options={occupationDropdownOptions}
+            isRequired
+          />
+          <ControlledChoiceGroup
+            name="preferredCrypto"
+            label="Preferred Cryptocurrency"
+            options={preferredCryptoOptions}
+          />
+
+          <PrimaryButton type="submit" text="Submit" />
+        </Stack>
+      </form>
+    </FormProvider>
   );
 };
