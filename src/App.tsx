@@ -12,7 +12,7 @@ import * as yup from 'yup';
 import { SchemaOf } from 'yup';
 import { ControlledTextField } from './components/controlledTextField';
 import { ControlledDropdown } from './components/controlledDropdown';
-import { ControlledCheckbox } from './components/controlledChoiceGroup';
+import { ControlledCheckbox } from './components/controlledCheckbox';
 import { occupationDropdownOptions } from './models/occupationDropdownOptions';
 import { textFieldStyles } from './public/textFieldStyles';
 import { dropdownStyles } from './public/dropdownStyles';
