@@ -1,16 +1,15 @@
 import React from 'react';
 import { useController } from 'react-hook-form';
-import { ChoiceGroup, IChoiceGroupOption } from '@fluentui/react/lib/ChoiceGroup';
+import { Checkbox } from '@fluentui/react/lib/Checkbox';
 
-type ControlledChoiceGroupProps = {
+type ControlledCheckboxProps = {
   name: string;
   label: string;
-  options: IChoiceGroupOption[];
   defaultValue?: boolean;
 };
 
-export const ControlledChoiceGroup: React.FunctionComponent<ControlledChoiceGroupProps> =
-  ({ name, label, options, defaultValue }) => {
+export const ControlledCheckbox: React.FunctionComponent<ControlledCheckboxProps> =
+  ({ name, label, defaultValue }) => {
     const {
       field: { value, onChange },
     } = useController({
@@ -19,10 +18,9 @@ export const ControlledChoiceGroup: React.FunctionComponent<ControlledChoiceGrou
     });
 
     return (
-      <ChoiceGroup
+      <Checkbox
         label={label}
-        options={options}
-        selectedKey={value}
+        checked={value}
         onChange={onChange}
       />
     );

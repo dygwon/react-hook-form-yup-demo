@@ -1,13 +1,18 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Stack, IStackTokens, IStackStyles } from '@fluentui/react/lib/Stack';
 import { initializeIcons } from '@fluentui/react/lib/Icons';
 import { useForm, FormProvider } from 'react-hook-form';
 import { PrimaryButton } from '@fluentui/react/lib/Button';
 import { ControlledTextField } from './components/controlledTextField';
 import { ControlledDropdown } from './components/controlledDropdown';
-import { ControlledChoiceGroup } from './components/controlledChoiceGroup';
-import { Header } from './components/Header';
-import { IChoiceGroupOption, IDropdownOption } from '@fluentui/react';
+import { ControlledCheckbox } from './components/controlledChoiceGroup';
+import { occupationDropdownOptions } from './models/occupationDropdownOptions';
+import { preferredCryptoOptions } from './models/preferredCryptoOptions';
+import { textFieldStyles } from './public/textFieldStyles';
+import { dropdownStyles } from './public/dropdownStyles';
+import { yupResolver } from '@hookform/resolvers/yup';
+import * as yup from 'yup';
+import { SchemaOf } from 'yup';
 
 initializeIcons();
 
@@ -21,86 +26,99 @@ const stackStyles: Partial<IStackStyles> = {
   },
 };
 
-const occupationDropdownOptions: IDropdownOption[] = [
-  { key: 'Software Engineer', text: 'Software Engineer' },
-  { key: 'Software Engineering Manager', text: 'Software Engineering Manager' },
-  { key: 'Data Scientist', text: 'Data Scientist' },
-  { key: 'Product Designer', text: 'Product Designer' },
-  { key: 'Program Manager', text: 'Program Manager' },
-  { key: 'Technical Program Manager', text: 'Technical Program Manager' },
-];
-
-const preferredCryptoOptions: IChoiceGroupOption[] = [
-  { key: 'BTC', text: 'BTC' },
-  { key: 'ETH', text: 'ETH' },
-  { key: 'ADA', text: 'ADA' },
-  { key: 'BNB', text: 'BNB' },
-];
-
 /**
- * 1. useForm - custom hook
- * 2. register
- * 3. handleSubmit - validate inputs prior to invoking onSubmit
+ * Packages:
+ *   react-hook-form
+ *   @hookform/resolvers yup
+ *   yup
+ * 
+ * 1. useController
+ * 2. control with FormProvider
+ * 3. 
  */
 
 type Inputs = {
   firstName: string,
   lastName: string,
   email: string,
-  mobileNumber: number,
+  website: string,
   id: string,
   occupation: string,
-  preferredCrypto: string
+  isCryptoHolder: boolean
 }
 
-export const App: React.FunctionComponent = () => {
+const schema = yup.object().shape({
+  firstName: yup.string().required('Please provide a first name'),
+  lastName: yup.string(),
+  email: yup.string().email(),
+  website: yup.string().required(),
+  id: yup.string().uuid().required(),
+  occupation: yup.string().required(),
+  isCryptoHolder: yup.boolean()
+});
 
-  const methods = useForm<Inputs>();
-  const onSubmit = (data: any) => console.log(data);
+export const App: React.FunctionComponent = () => {
+  const methods = useForm<Inputs>({ resolver: yupResolver(schema) });
+  const [result, setResult] = useState("");
+  const onSubmit = (data: any) => setResult(JSON.stringify(data));
   
   return (
     <FormProvider {...methods}>
       <form onSubmit={methods.handleSubmit(onSubmit)} noValidate>
-        <Header />
         <Stack horizontalAlign="center" verticalAlign="center" verticalFill styles={stackStyles} tokens={stackTokens}>
-          <ControlledTextField
-            name="firstName"
-            label="First Name"
-            isRequired
-          />
-          <ControlledTextField
-            name="lastName"
-            label="Last Name"
-          />
-          <ControlledTextField
-            name="email"
-            label="Email"
-            isRequired
-          />
-          <ControlledTextField
-            name="mobileNumber"
-            label="Mobile Number"
-            isRequired
-          />
-          <ControlledTextField
-            name="id"
-            label="ID"
-            isRequired
-          />
-          <ControlledDropdown
-            name="Occupation"
-            options={occupationDropdownOptions}
-            isRequired
-          />
-          <ControlledChoiceGroup
-            name="preferredCrypto"
-            label="Preferred Cryptocurrency"
-            options={preferredCryptoOptions}
-          />
+          <NestedInput />
 
           <PrimaryButton type="submit" text="Submit" />
+          <p>{result}</p>
         </Stack>
       </form>
     </FormProvider>
   );
 };
+
+const NestedInput: React.FunctionComponent = () => {
+  return (
+    <>
+      <ControlledTextField
+        name="firstName"
+        label="First Name"
+        isRequired
+        styles={textFieldStyles}
+      />
+      <ControlledTextField
+        name="lastName"
+        label="Last Name"
+        styles={textFieldStyles}
+      />
+      <ControlledTextField
+        name="email"
+        label="Email"
+        isRequired
+        styles={textFieldStyles}
+      />
+      <ControlledTextField
+        name="website"
+        label="Website"
+        isRequired
+        styles={textFieldStyles}
+      />
+      <ControlledTextField
+        name="id"
+        label="ID"
+        isRequired
+        styles={textFieldStyles}
+      />
+      <ControlledDropdown
+        name="occupation"
+        label="Occupation"
+        options={occupationDropdownOptions}
+        isRequired
+        styles={dropdownStyles}
+      />
+      <ControlledCheckbox
+        name="isCryptoHolder"
+        label="Do you hold any cryptocurrencies?"
+      />
+    </>
+  );
+}
